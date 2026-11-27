@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Circuitos Magnéticos | Máquinas Eléctricas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div>
+        <h1>Calculadora de Circuitos Magnéticos</h1>
+        <p class="subtitle">Cálculo de reluctancias, flujo total, Φx, Φy y densidades de flujo (en m y m²)</p>
+      </div>
+      <div class="actions">
+        <button id="btnLimpiar" type="button" class="btn btn-secondary">Limpiar campos</button>
+        <button id="btnCalcular" type="button" class="btn btn-primary">Cargar resultados</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-grid">
+    <!-- Panel izquierdo: Entradas -->
+    <section class="card">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-modo="rotor" type="button">
+          Núcleo con Rotor y Entrehierro
+        </button>
+        <button class="tab" data-modo="serie" type="button">
+          Núcleo en Serie
+        </button>
+      </div>
+
+      <div id="errorBox" class="error-box hidden"></div>
+
+      <!-- Datos generales -->
+      <div class="section-block">
+        <h2>Datos generales</h2>
+        <div class="grid-3">
+          <label>
+            Corriente I (A)
+            <input type="number" id="corriente" step="any" placeholder="Ej. 3.7" />
+          </label>
+          <label>
+            Espiras N (vueltas)
+            <input type="number" id="espiras" step="any" placeholder="Ej. 700" />
+          </label>
+          <label>
+            Permeabilidad μr
+            <input type="number" id="mur" step="any" placeholder="Ej. 4500" />
+          </label>
+          <label>
+            Factor de apilamiento fa
+            <input type="number" id="factorApilamiento" step="any" placeholder="Ej. 0.98" />
+          </label>
+          <label class="modo-rotor-only">
+            Entrehierro la (m)
+            <input type="number" id="entrehierroM" step="any" placeholder="Ej. 0.0005" />
+          </label>
+          <label class="modo-rotor-only">
+            Longitud rotor lcr (m)
+            <input type="number" id="lcr" step="any" placeholder="Ej. 0.16" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Modo Rotor: Longitudes (m) y Áreas (m^2) -->
+      <div id="formRotor" class="section-block">
+        <h2>Mediciones del núcleo y rotor (longitudes en m, áreas en m²)</h2>
+        <p class="hint">
+          Ingresa las longitudes medias lc en metros y las áreas A en m². El factor de apilamiento fa se aplica a las áreas del núcleo y del rotor, mientras que el entrehierro usa μr = 1.
+        </p>
+
+        <h3>Longitudes medias lc (m)</h3>
+        <div class="grid-4">
+          <label>lc1 (m)<input type="number" id="lc1" step="any" placeholder="m" /></label>
+          <label>lc2 (m)<input type="number" id="lc2" step="any" placeholder="m" /></label>
+          <label>lc3 (m)<input type="number" id="lc3" step="any" placeholder="m" /></label>
+          <label>lc4 (m)<input type="number" id="lc4" step="any" placeholder="m" /></label>
+          <label>lc5 (m)<input type="number" id="lc5" step="any" placeholder="m" /></label>
+          <label>lc6 (m)<input type="number" id="lc6" step="any" placeholder="m" /></label>
+          <label>lc7 (m)<input type="number" id="lc7" step="any" placeholder="m" /></label>
+          <label>lc8 (m)<input type="number" id="lc8" step="any" placeholder="m" /></label>
+        </div>
+
+        <h3>Áreas de sección transversal A (m²)</h3>
+        <div class="grid-4">
+          <label>A1 (m²)<input type="number" id="a1" step="any" placeholder="m²" /></label>
+          <label>A2 (m²)<input type="number" id="a2" step="any" placeholder="m²" /></label>
+          <label>A3 (m²)<input type="number" id="a3" step="any" placeholder="m²" /></label>
+          <label>A4 (m²)<input type="number" id="a4" step="any" placeholder="m²" /></label>
+          <label>A5 (m²)<input type="number" id="a5" step="any" placeholder="m²" /></label>
+          <label>A6 (m²)<input type="number" id="a6" step="any" placeholder="m²" /></label>
+          <label>A7 (m²)<input type="number" id="a7" step="any" placeholder="m²" /></label>
+          <label>A8 (m²)<input type="number" id="a8" step="any" placeholder="m²" /></label>
+          <label>Ar rotor (m²)<input type="number" id="ar" step="any" placeholder="m²" /></label>
+          <label>Aa entrehierro (m²)<input type="number" id="aa" step="any" placeholder="m²" /></label>
+        </div>
+      </div>
+
+      <!-- Modo Serie -->
+      <div id="formSerie" class="section-block hidden">
+        <h2>Mediciones en serie (longitudes en m, áreas en m²)</h2>
+        <div class="grid-4">
+          <label>lc1 (m)<input type="number" id="s_lc1" step="any" placeholder="m" /></label>
+          <label>A1 (m²)<input type="number" id="s_a1" step="any" placeholder="m²" /></label>
+          <label>lc2 (m)<input type="number" id="s_lc2" step="any" placeholder="m" /></label>
+          <label>A2 (m²)<input type="number" id="s_a2" step="any" placeholder="m²" /></label>
+          <label>lc3 (m)<input type="number" id="s_lc3" step="any" placeholder="m" /></label>
+          <label>A3 (m²)<input type="number" id="s_a3" step="any" placeholder="m²" /></label>
+          <label>lc4 (m)<input type="number" id="s_lc4" step="any" placeholder="m" /></label>
+          <label>A4 (m²)<input type="number" id="s_a4" step="any" placeholder="m²" /></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel derecho: Resultados y esquema -->
+    <section class="card">
+      <h2>Resultados principales</h2>
+      <div id="resultadosPrincipales" class="kpi-grid"></div>
+
+      <h2>Esquema del circuito</h2>
+      <div class="diagram-box">
+        <svg id="diagramaSvg" viewBox="0 0 640 220" width="100%" height="auto"></svg>
+      </div>
+
+      <h2>Reluctancias y cálculo paso a paso</h2>
+      <div id="detallePasos" class="steps-box"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
