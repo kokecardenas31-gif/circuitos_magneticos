@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Circuitos Magnéticos | Máquinas Eléctricas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div>
+        <h1>Calculadora de Circuitos Magnéticos</h1>
+        <p class="subtitle">Análisis de reluctancias, flujo magnético y densidad de flujo</p>
+      </div>
+      <div class="actions">
+        <button id="btnEjemplo" type="button" class="btn btn-secondary">Cargar ejemplo de clase</button>
+        <button id="btnCalcular" type="button" class="btn btn-primary">Calcular</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-grid">
+    <!-- Panel izquierdo: Entradas -->
+    <section class="card">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-modo="rotor" type="button">
+          Núcleo con Rotor y Entrehierros (5-S)
+        </button>
+        <button class="tab" data-modo="serie" type="button">
+          Núcleo Simple en Serie (1)
+        </button>
+      </div>
+
+      <div id="errorBox" class="error-box hidden"></div>
+
+      <!-- Parámetros generales -->
+      <div class="section-block">
+        <h2>Parámetros generales</h2>
+        <div class="grid-3">
+          <label>
+            Corriente $I$ (A)
+            <input type="number" id="corriente" step="any" />
+          </label>
+          <label>
+            Espiras $N$ (vueltas)
+            <input type="number" id="espiras" step="1" />
+          </label>
+          <label>
+            Permeabilidad relativa $\mu_r$
+            <input type="number" id="mur" step="any" />
+          </label>
+          <label>
+            Factor de apilamiento $f_a$
+            <input type="number" id="factorApilamiento" step="any" min="0.01" max="1" />
+          </label>
+          <label class="modo-rotor-only">
+            Entrehierro $l_a$ (cm)
+            <input type="number" id="entrehierroCm" step="any" />
+          </label>
+          <label class="modo-rotor-only">
+            Diámetro del rotor $d_r$ (cm)
+            <input type="number" id="diametroRotorCm" step="any" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Formulario Modo Rotor (5-S) -->
+      <div id="formRotor" class="section-block">
+        <h2>Dimensiones del núcleo y rotor (en cm)</h2>
+        <p class="hint">
+          Se calculan las áreas efectivas $A_k = (\text{ancho} \times \text{fondo}) \times f_a$ y las longitudes medias de cada tramo.
+        </p>
+
+        <div class="grid-4">
+          <label>Fondo / Profundidad (cm)<input type="number" id="r_fondo" step="any" /></label>
+          <label>Ancho col. izq. (cm)<input type="number" id="r_colIzq" step="any" /></label>
+          <label>Ancho col. central (cm)<input type="number" id="r_colCen" step="any" /></label>
+          <label>Ancho col. der. (cm)<input type="number" id="r_colDer" step="any" /></label>
+
+          <label>Ventana ancho (cm)<input type="number" id="r_ventAncho" step="any" /></label>
+          <label>Yugo superior alto (cm)<input type="number" id="r_yugoSup" step="any" /></label>
+          <label>Yugo inferior alto (cm)<input type="number" id="r_yugoInf" step="any" /></label>
+          <label>Ventana / tramo alto (cm)<input type="number" id="r_tramoVert" step="any" /></label>
+        </div>
+
+        <h3>Longitudes medias $l_c$ (m) y áreas $A$ ($\text{m}^2$) directas o ajustables</h3>
+        <p class="hint">
+          Puedes dejar los valores calculados automáticamente desde las dimensiones o editar las longitudes medias $l_c$ (en metros) para replicar exactamente tu desarrollo.
+        </p>
+        <div class="grid-3">
+          <label>$l_{c1}$ (m)<input type="number" id="lc1" step="any" /></label>
+          <label>$l_{c2}$ (m)<input type="number" id="lc2" step="any" /></label>
+          <label>$l_{c3}$ (m)<input type="number" id="lc3" step="any" /></label>
+          <label>$l_{c4}$ (m)<input type="number" id="lc4" step="any" /></label>
+          <label>$l_{c5}$ (m)<input type="number" id="lc5" step="any" /></label>
+          <label>$l_{c6}$ (m)<input type="number" id="lc6" step="any" /></label>
+          <label>$l_{c7}$ (m)<input type="number" id="lc7" step="any" /></label>
+          <label>$l_{c8}$ (m)<input type="number" id="lc8" step="any" /></label>
+          <label>$l_{cr}$ Rotor (m)<input type="number" id="lcr" step="any" /></label>
+        </div>
+      </div>
+
+      <!-- Formulario Modo Serie (1) -->
+      <div id="formSerie" class="section-block hidden">
+        <h2>Tramos del núcleo en serie (4 tramos)</h2>
+        <p class="hint">
+          Ingresa longitud media $l_c$ (en m) y área efectiva $A$ (en $\text{m}^2$, ya con $f_a$ aplicado) de cada uno de los 4 tramos.
+        </p>
+        <div class="grid-4">
+          <label>$l_{c1}$ (m)<input type="number" id="s_lc1" step="any" /></label>
+          <label>$A_1$ ($\text{m}^2$)<input type="number" id="s_a1" step="any" /></label>
+          <label>$l_{c2}$ (m)<input type="number" id="s_lc2" step="any" /></label>
+          <label>$A_2$ ($\text{m}^2$)<input type="number" id="s_a2" step="any" /></label>
+
+          <label>$l_{c3}$ (m)<input type="number" id="s_lc3" step="any" /></label>
+          <label>$A_3$ ($\text{m}^2$)<input type="number" id="s_a3" step="any" /></label>
+          <label>$l_{c4}$ (m)<input type="number" id="s_lc4" step="any" /></label>
+          <label>$A_4$ ($\text{m}^2$)<input type="number" id="s_a4" step="any" /></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel derecho: Resultados y esquema -->
+    <section class="card">
+      <h2>Resultados principales</h2>
+      <div id="resultadosPrincipales" class="kpi-grid"></div>
+
+      <h2>Esquema equivalente de reluctancias</h2>
+      <div class="diagram-box">
+        <svg id="diagramaSvg" viewBox="0 0 640 240" width="100%" height="auto"></svg>
+      </div>
+
+      <h2>Reducción del circuito y detalle paso a paso</h2>
+      <div id="detallePasos" class="steps-box"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
